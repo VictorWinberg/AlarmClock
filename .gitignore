@@ -1,0 +1,4 @@
+.metadata/
+
+# Java / Scala
+**/*.class
