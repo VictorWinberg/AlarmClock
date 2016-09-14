@@ -13,6 +13,8 @@ public class AlarmClock extends Thread {
 		input = i;
 		output = o;
 		sem = input.getSemaphoreInstance();
+		Time t = new Time(o);	// To be removed later with SharedData
+		t.start();
 	}
 
 	// The AlarmClock thread is started by the simulator. No
@@ -21,6 +23,7 @@ public class AlarmClock extends Thread {
 	// below is a simple alarmclock thread that beeps upon 
 	// each keypress. To be modified in the lab.
 	public void run() {
+		System.out.println("AlarmClock started!");
 		while (true) {
 			sem.take();
 			output.doAlarm();
