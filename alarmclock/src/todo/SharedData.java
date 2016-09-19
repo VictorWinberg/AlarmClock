@@ -39,7 +39,7 @@ public class SharedData {
 	}
 	
 	private int convertIntoHHMMSS(int seconds) {
-		int hh = seconds / (60 * 60);
+		int hh = (seconds / (60 * 60)) % 24;
         int mm = (seconds / 60) % 60;
         int ss = seconds % 60;
         return hh * 10000 + mm * 100 + ss;
