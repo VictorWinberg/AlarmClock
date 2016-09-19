@@ -53,14 +53,20 @@ public class SharedData {
 	}
 
 	public void setAlarm(int hhmmss) {
+		sem.take();
 		alarmTime = convertIntoSeconds(hhmmss);
+		sem.give();
 	}
 	
 	public void stopAlarm() {
+		sem.take();
 		alarms = 0;
+		sem.give();
 	}
 
 	public void setTime(int hhmmss) {
+		sem.take();
 		currentTime = convertIntoSeconds(hhmmss);
+		sem.give();
 	}
 }
