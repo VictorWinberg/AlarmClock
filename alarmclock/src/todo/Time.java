@@ -1,22 +1,21 @@
 package todo;
 
-import done.ClockOutput;
-
 public class Time extends Thread {
 	
-	private static ClockOutput	output;		// To be removed later with SharedData
-	
-	public Time(ClockOutput o) {
-		output = o;
+	private SharedData data;
+
+	public Time(SharedData data) {
+		this.data = data;
 	}
 	
-	int t = 0;
-	
 	public void run() {
+		long t = System.currentTimeMillis();
 		while (true) {
-			output.showTime(t++);
+			data.addSecond();
+			t += 1000;
+			long diff = t - System.currentTimeMillis();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(diff);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
