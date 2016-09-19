@@ -9,8 +9,8 @@ public class Time extends Thread {
 	}
 	
 	public void run() {
-		long t = System.currentTimeMillis();
 		while (true) {
+			long t = System.currentTimeMillis();
 			data.addSecond();
 			t += 1000;
 			long diff = t - System.currentTimeMillis();

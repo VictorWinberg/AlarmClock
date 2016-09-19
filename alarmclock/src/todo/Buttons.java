@@ -9,9 +9,9 @@ public class Buttons extends Thread {
 	private SharedData data;
 	private static Semaphore sem;
 	
-	public Buttons(ClockInput i, SharedData data) {
+	public Buttons(ClockInput i, SharedData sd) {
 		input = i;
-		this.data = data;
+		data = sd;
 		sem = i.getSemaphoreInstance();
 	}
 	

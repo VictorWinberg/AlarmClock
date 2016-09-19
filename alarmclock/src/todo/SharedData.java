@@ -21,22 +21,20 @@ public class SharedData {
 
 	public void addSecond() {
 		sem.take();
-		currentTime++;
+		if(input.getChoice() != ClockInput.SET_TIME)
+			currentTime++;
 		
-		int hhmmss = convertIntoHHMMSS(currentTime);
-        
-        if(input.getChoice() == ClockInput.SHOW_TIME) {
-        	output.showTime(hhmmss);        	
-        }
-        
-        if(input.getAlarmFlag() && currentTime == alarmTime) {
-        	alarms = 20;
-        }
-        
+		if(input.getChoice() == ClockInput.SHOW_TIME && input.getAlarmFlag() && currentTime == alarmTime) {
+			alarms = 20;
+		}			
+		
         if(alarms > 0) {
         	output.doAlarm();
         	alarms--;
         }
+        
+        int hhmmss = convertIntoHHMMSS(currentTime);        
+        output.showTime(hhmmss);        	
         sem.give();
 	}
 	
