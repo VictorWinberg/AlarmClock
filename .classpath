@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="alarmclock/src"/>
+	<classpathentry kind="src" path="lift/src"/>
+	<classpathentry kind="src" path="washing/src"/>
+	<classpathentry kind="lib" path="alarmclock/resources/img.jar"/>
+	<classpathentry kind="lib" path="ljrt/ljrt.jar"/>
+	<classpathentry kind="lib" path="washing/resources/img.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
