@@ -2,13 +2,17 @@ package lift;
 
 public class Lift extends Thread {
 	
+	private Monitor monitor;
+	
 	public Lift(Monitor monitor) {
-		// TODO Auto-generated constructor stub
+		this.monitor = monitor;
 	}
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		super.run();
+		while(true) {
+			monitor.updateLift();
+			monitor.moveLift();
+		}
 	}
 }
