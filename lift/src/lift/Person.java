@@ -23,7 +23,11 @@ public class Person extends Thread {
 			while(targetFloor == initFloor) {
 				targetFloor = ((int)(Math.random() * 7.0));
 			}
-			monitor.liftAction(initFloor, targetFloor);
+			try {
+				monitor.personAction(initFloor, targetFloor);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

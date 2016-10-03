@@ -11,7 +11,11 @@ public class Lift extends Thread {
 	@Override
 	public void run() {
 		while(true) {
-			monitor.updateLift();
+			try {
+				monitor.updateLift();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			monitor.moveLift();
 		}
 	}

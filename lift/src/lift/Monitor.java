@@ -6,6 +6,7 @@ public class Monitor {
 	private int here; 			// from which floor the lift is moving
 	private int next; 			// to which floor the lift is moving
 	private int [] waitEntry;	// Persons waiting to enter the lift at the various floors.
+	private int [] waitEntryDir;
 	private int [] waitExit; 	// Persons (inside the lift) waiting to leave the lift at the various floors.
 	private int load; 			// The number of people currently occupying the lift.
 	private boolean up;
@@ -17,93 +18,93 @@ public class Monitor {
 		up = true;
 		waitEntry = new int[7];
 		waitExit = new int[7];
+		waitEntryDir = new int[7];
+	}
+
+	public void moveLift() {
+		int tempHere, tempNext;
+		synchronized (this) {
+			tempHere = here; 
+			tempNext = next;
+		}
+		if(!waitEntriesEmpty() && tempHere != tempNext)
+			view.moveLift(tempHere, tempNext);
 	}
 	
-	public synchronized void updateLift() {
+	public synchronized void updateLift() throws InterruptedException {
 		here = next;
 		notifyAll();
 		
-		// Check if persons are waiting for or want to exit the lift
-		while((waitEntry[here] > 0 && load < 4) || waitExit[here] > 0) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		// Wait and move lift if we have waiting persons
+		while(waitEntriesEmpty()) {
+			wait();
 		}
 		
-		// Move the lift
-		if(emptyLift())
-			return;
+		// Check if persons are waiting for or want to exit the lift
+		while((waitEntryDir[here] > 0 && load < 4) || waitExit[here] > 0) {
+			wait();
+		}
+		
 		if(up) {
-			if(++next >= 6)
-				up = false;
+			up = ++next < 6;
 		} else {
-			if(--next <= 0)
-				up = true;
+			up = --next <= 0;
 		}
 		notifyAll();
 	}
 	
-	private boolean emptyLift() {
+	private boolean waitEntriesEmpty() {
 		for(int i = 0; i < 6; i++) {
 			if(waitEntry[i] > 0) 
 				return false;
 		}
 		return true;
 	}
-
-	public void moveLift() {
-		if(!emptyLift() && here != next)
-			view.moveLift(here, next);
-	}
 	
-	public synchronized void liftAction(int initFloor, int targetFloor) {
+	public synchronized void personAction(int initFloor, int targetFloor) throws InterruptedException {
 		// Add person to wait on level
+		waitEntryDir[initFloor]++;
 		drawLevel(initFloor, ++waitEntry[initFloor]);
 		notifyAll();
 		
 		// Wait until person can enter lift
-		while(!enterLift(initFloor)) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		while(!enterLift(initFloor) || !correctDirection(targetFloor)) {
+			boolean reset = false;
+			// Lift is standing still but in the wrong direction
+			if(here == next && !correctDirection(targetFloor)) {
+				waitEntryDir[initFloor]--;
+				reset = true;
+			}
+			wait();
+			if(reset) {
+				waitEntryDir[initFloor]++;
+				reset = false;
 			}
 		}
 
 		// Proceed to enter the lift
 		waitEntry[here]--;
+		waitEntryDir[here]--;
 		drawLevel(here, waitEntry[here]);
 		load++;
 		waitExit[targetFloor]++;
 		drawLift(here, load);
-		try {	// Sleeping makes animation a bit smoother
-			Thread.sleep(40);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
 		notifyAll();
 		
 		// Wait until person can exit lift
 		while(!exitLift(targetFloor)) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			wait();
 		}
 		
 		// Proceed to exit the lift
 		waitExit[here]--;
 		load--;
 		drawLift(here, load);
-		try {	// Sleeping makes animation a bit smoother
-			Thread.sleep(40);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
 		notifyAll();
+	}
+
+	private boolean correctDirection(int targetFloor) {
+		return up ? targetFloor > here : targetFloor < here;
 	}
 
 	private boolean enterLift(int initFloor) {
