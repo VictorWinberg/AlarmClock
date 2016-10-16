@@ -38,7 +38,7 @@ public class Wash {
 	public static void main(String[] args)
 			throws NumberFormatException, InterruptedException {
 		// Options
-		double theSpeed             = 50.0;
+		double theSpeed             = 1000.0;
 		boolean useHackerPanel      = false;
 		double freakShowProbability = 0.00333333;    // Once a minute
 		// Read options

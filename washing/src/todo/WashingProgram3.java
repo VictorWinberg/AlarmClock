@@ -46,7 +46,7 @@ class WashingProgram3 extends WashingProgram {
 	 */
 	protected void wash() throws InterruptedException {
 
-		// Switch of temp regulation
+		// Switch off temp regulation
 		myTempController.putEvent(new TemperatureEvent(this,
 				TemperatureEvent.TEMP_IDLE,
 				0.0));
@@ -67,5 +67,6 @@ class WashingProgram3 extends WashingProgram {
 
 		// Unlock
 		myMachine.setLock(false);
+		System.out.println("Machine unlocked");
 	}
 }

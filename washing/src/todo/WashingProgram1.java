@@ -45,27 +45,42 @@ class WashingProgram1 extends WashingProgram {
 	 * when the start() method is called.
 	 */
 	protected void wash() throws InterruptedException {
-
-		// Switch of temp regulation
-		myTempController.putEvent(new TemperatureEvent(this,
-				TemperatureEvent.TEMP_IDLE,
-				0.0));
-
-		// Switch off spin
-		mySpinController.putEvent(new SpinEvent(this, SpinEvent.SPIN_OFF));
-
-		// Drain
-		myWaterController.putEvent(new WaterEvent(this,
-				WaterEvent.WATER_DRAIN,
-				0.0));
-		mailbox.doFetch(); // Wait for Ack
-
-		// Set water regulation to idle => drain pump stops
-		myWaterController.putEvent(new WaterEvent(this,
-				WaterEvent.WATER_IDLE,
-				0.0));
-
+		
+		// Lock
+		myMachine.setLock(true);
+		System.out.println("Machine locked");
+		
+		wash(60, 30);
+		
+		// Rinse 5 times in cold water for 2 minutes
+		for(int i = 0; i < 5; i++){
+			System.out.println("Rinse " + (i+1));
+			myWaterController.putEvent(new WaterEvent(this, 
+					WaterEvent.WATER_FILL, 
+					10.0));
+			mailbox.doFetch(); // Wait for Ack
+			
+			System.out.println("Wait 2 minutes");
+			sleep(2 * myMinute);
+			
+			myWaterController.putEvent(new WaterEvent(this, 
+					WaterEvent.WATER_DRAIN, 
+					0.0));
+			mailbox.doFetch(); // Wait for Ack
+		}
+		
+		// Centrifuge for 5 minutes
+		mySpinController.putEvent(new SpinEvent(this, 
+				SpinEvent.SPIN_FAST));
+		
+		System.out.println("Centrifuge 5 minutes");
+		sleep(5 * myMinute);
+		
+		mySpinController.putEvent(new SpinEvent(this, 
+				SpinEvent.SPIN_OFF));
+		
 		// Unlock
 		myMachine.setLock(false);
+		System.out.println("Machine unlocked");
 	}
 }

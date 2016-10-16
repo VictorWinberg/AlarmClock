@@ -55,11 +55,47 @@ public abstract class WashingProgram extends RTThread {
 
 		myMachine         = mach;
 		mySpeed           = speed;
+		myMinute		  = (int) (60 * 1000 / speed);
 		myTempController  = tempController;
 		myWaterController = waterController;
 		mySpinController  = spinController;
 	}
 
+	// ---------------------------------------------------- PROTECTED METHODS
+	
+	protected void wash(double temperature, int minutes) {
+		// Fill water to 10 l
+		myWaterController.putEvent(new WaterEvent(this, 
+				WaterEvent.WATER_FILL, 
+				10.0));
+		mailbox.doFetch(); // Wait for Ack
+		
+		// Start spin
+		mySpinController.putEvent(new SpinEvent(this, SpinEvent.SPIN_SLOW));
+		
+		// Set temperature to temperature degrees
+		myTempController.putEvent(new TemperatureEvent(this, 
+				TemperatureEvent.TEMP_SET, 
+				temperature));
+		mailbox.doFetch(); // Wait for Ack
+		
+		// Wait time minutes
+		System.out.println("Wash 30 minutes");
+		sleep(minutes * myMinute);
+
+		// Switch off temp regulation -----------> ?
+		myTempController.putEvent(new TemperatureEvent(this,
+				TemperatureEvent.TEMP_IDLE,
+				0.0));
+		
+		// Drain
+		myWaterController.putEvent(new WaterEvent(this,
+				WaterEvent.WATER_DRAIN,
+				0.0));
+		mailbox.doFetch(); // Wait for Ack
+	}
+	
+	
 	// ---------------------------------------------------- OVERRIDDEN METHODS
 
 	/**
@@ -112,6 +148,11 @@ public abstract class WashingProgram extends RTThread {
 	 * Simulation speed
 	 */
 	protected double mySpeed;
+	
+	/**
+	 * Simulation minute
+	 */
+	protected int myMinute;
 
 	/**
 	 * The temperature controller
