@@ -40,6 +40,7 @@ public class TemperatureController extends PeriodicThread {
 			}
 		}
 		
+		// Keep the temperature at the target temperature
 		if (mode == TemperatureEvent.TEMP_SET) {
 			if(machine.getTemperature() >= upperlimit && isHeating) {
 				machine.setHeating(false);

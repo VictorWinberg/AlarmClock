@@ -2,6 +2,8 @@ package todo;
 
 import javax.swing.JOptionPane;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
 import done.*;
 
 public class WashingController implements ButtonListener {	
@@ -25,10 +27,11 @@ public class WashingController implements ButtonListener {
     }
 
     public void processButton(int theButton) {		
-		System.out.println("Program " + theButton + " is running.");
+		System.out.println();
+    	System.out.println("Program " + theButton + " is running:");
 		
 		switch (theButton) {
-			case 0: 
+			case 0: (new WashingProgram0(machine, speed, tempCtrl, waterCtrl, spinCtrl)).start();
 				break;
 			case 1: (new WashingProgram1(machine, speed, tempCtrl, waterCtrl, spinCtrl)).start();
 				break;

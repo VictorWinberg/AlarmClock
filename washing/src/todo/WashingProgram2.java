@@ -11,9 +11,16 @@ package todo;
 import done.*;
 
 /**
- * Program 3 of washing machine. Does the following:
+ * Program 2 of washing machine. Does the following:
  * <UL>
- *   <LI>Switches off heating
+ *   <LI>Locks the hatch
+ *   <LI>Fill with water
+ *   <LI>Start spin
+ *   <LI>Heat water
+ *   <LI>Pre-wash 15 min
+ *   <LI>Main-Wash 30 min
+ *   <LI>Rinse 5 x 2 min
+ *   <LI>Centrifuge 5 min
  *   <LI>Switches off spin
  *   <LI>Pumps out water
  *   <LI>Unlocks the hatch.

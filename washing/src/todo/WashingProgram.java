@@ -55,7 +55,7 @@ public abstract class WashingProgram extends RTThread {
 
 		myMachine         = mach;
 		mySpeed           = speed;
-		myMinute		  = (int) (60 * 1000 / speed);
+		myMinute		  = (long) (60 * 1000 / speed);
 		myTempController  = tempController;
 		myWaterController = waterController;
 		mySpinController  = spinController;
@@ -80,7 +80,7 @@ public abstract class WashingProgram extends RTThread {
 		mailbox.doFetch(); // Wait for Ack
 		
 		// Wait time minutes
-		System.out.println("Wash 30 minutes");
+		System.out.println("Wash " + minutes + " minutes");
 		sleep(minutes * myMinute);
 
 		// Switch off temp regulation -----------> ?
@@ -152,7 +152,7 @@ public abstract class WashingProgram extends RTThread {
 	/**
 	 * Simulation minute
 	 */
-	protected int myMinute;
+	protected long myMinute;
 
 	/**
 	 * The temperature controller

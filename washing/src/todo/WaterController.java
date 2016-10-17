@@ -38,18 +38,20 @@ public class WaterController extends PeriodicThread {
 				break;
 				
 			case WaterEvent.WATER_DRAIN:
-				if(true) System.out.print("Drain ... ");
+				sleep(1); System.out.print("Drain ... ");
 				machine.setDrain(true);
 				machine.setFill(false);
 			}
 		}
 
+		// Keep filling the machine until it is above target level
 		if (mode == WaterEvent.WATER_FILL && machine.getWaterLevel() >= level) {
 			machine.setFill(false);
 			mode = WaterEvent.WATER_IDLE;
 			System.out.println("ACK");
 			source.putEvent(new AckEvent(this));
 		}
+		// Keep draining the machine until it is below target level
 		else if (mode == WaterEvent.WATER_DRAIN && machine.getWaterLevel() <= level) {
 			machine.setDrain(false);
 			mode = WaterEvent.WATER_IDLE;
