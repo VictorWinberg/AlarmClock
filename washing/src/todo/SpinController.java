@@ -7,18 +7,13 @@ public class SpinController extends PeriodicThread {
 	
 	private AbstractWashingMachine machine;
 	private int mode = SpinEvent.SPIN_OFF;
-	private int spinDirection;
-	private double minute;
-	private long lastShift;
+	private int spinDirection, counter;
 
 	public SpinController(AbstractWashingMachine mach, double speed) {
 		super((long) (1000/speed));
 		machine = mach;
 		spinDirection = AbstractWashingMachine.SPIN_LEFT;
-		minute = 60 * 1000 / speed;
 	}
-	
-	// FIX
 
 	public void perform() {
 		SpinEvent event = (SpinEvent) mailbox.tryFetch();
@@ -37,7 +32,7 @@ public class SpinController extends PeriodicThread {
 				//System.out.println("Spin slow LEFT");
 				spinDirection = AbstractWashingMachine.SPIN_LEFT;
 				machine.setSpin(spinDirection);
-				lastShift = System.currentTimeMillis();
+				counter = 0;
 				break;
 				
 			case SpinEvent.SPIN_FAST: 
@@ -48,8 +43,7 @@ public class SpinController extends PeriodicThread {
 		}
 		
 		// Change direction every minute when slow spinning
-		if(mode == SpinEvent.SPIN_SLOW && System.currentTimeMillis() > lastShift + minute) {
-			lastShift = System.currentTimeMillis();
+		if(mode == SpinEvent.SPIN_SLOW && counter++ % 60 == 0) {
 			
 			if(spinDirection == AbstractWashingMachine.SPIN_LEFT) {
 				//System.out.println("Spin slow RIGHT");
