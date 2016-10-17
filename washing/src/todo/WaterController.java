@@ -11,7 +11,7 @@ public class WaterController extends PeriodicThread {
 	private RTThread source;
 
 	public WaterController(AbstractWashingMachine mach, double speed) {
-		super((long) (1000/speed));
+		super((long) (3 * 1000/speed));
 		machine = mach;
 	}
 

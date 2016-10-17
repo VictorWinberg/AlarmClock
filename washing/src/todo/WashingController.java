@@ -9,6 +9,7 @@ public class WashingController implements ButtonListener {
 	private AbstractWashingMachine machine;
 	private double speed;
 	
+	private WashingProgram wp;
 	private TemperatureController tempCtrl;
 	private SpinController spinCtrl;
 	private WaterController waterCtrl;
@@ -31,11 +32,14 @@ public class WashingController implements ButtonListener {
     		prevButton = 0;
     	
 		switch (theButton) {
-			case 0: (new WashingProgram0(machine, speed, tempCtrl, waterCtrl, spinCtrl)).start();
+			case 0: 
+				if(wp != null)
+					wp.interrupt();
 				break;
 			case 1: 
 				if(prevButton == 0) {
-					(new WashingProgram1(machine, speed, tempCtrl, waterCtrl, spinCtrl)).start();					
+					wp = new WashingProgram1(machine, speed, tempCtrl, waterCtrl, spinCtrl);
+					wp.start();
 				}
 				else {
 					sendMsg(prevButton);
@@ -44,7 +48,8 @@ public class WashingController implements ButtonListener {
 				break;
 			case 2: 
 				if(prevButton == 0) {
-					(new WashingProgram2(machine, speed, tempCtrl, waterCtrl, spinCtrl)).start();
+					wp = new WashingProgram2(machine, speed, tempCtrl, waterCtrl, spinCtrl);
+					wp.start();
 				} else {
 					sendMsg(prevButton);
 					return;
@@ -52,7 +57,8 @@ public class WashingController implements ButtonListener {
 				break;
 			case 3: 
 				if(prevButton == 0) {
-					(new WashingProgram3(machine, speed, tempCtrl, waterCtrl, spinCtrl)).start();
+					wp = new WashingProgram3(machine, speed, tempCtrl, waterCtrl, spinCtrl);
+					wp.start();
 				} else {
 					sendMsg(prevButton);
 					return;

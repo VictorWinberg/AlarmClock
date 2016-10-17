@@ -17,6 +17,8 @@ public class SpinController extends PeriodicThread {
 		spinDirection = AbstractWashingMachine.SPIN_LEFT;
 		minute = 60 * 1000 / speed;
 	}
+	
+	// FIX
 
 	public void perform() {
 		SpinEvent event = (SpinEvent) mailbox.tryFetch();

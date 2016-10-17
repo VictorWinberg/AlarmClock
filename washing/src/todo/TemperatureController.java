@@ -13,7 +13,7 @@ public class TemperatureController extends PeriodicThread {
 	private RTThread source;
 
 	public TemperatureController(AbstractWashingMachine mach, double speed) {
-		super((long) (1000/speed));
+		super((long) (10 * 1000/speed));
 		machine = mach;
 	}
 
@@ -30,11 +30,12 @@ public class TemperatureController extends PeriodicThread {
 			case TemperatureEvent.TEMP_IDLE:
 				System.out.println("Switch off temp regulation");
 				machine.setHeating(false);
+				isHeating = false;
 				break;
 				
 			case TemperatureEvent.TEMP_SET:
-				upperlimit = temperature;
-				lowerlimit = upperlimit - 2;
+				upperlimit = temperature - 1;
+				lowerlimit = temperature - 1.8;
 				sendAck = true;
 				if(true) System.out.print("Set temperature to " + temperature + " degrees ... ");
 			}
@@ -50,7 +51,7 @@ public class TemperatureController extends PeriodicThread {
 					source.putEvent(new AckEvent(this));
 					sendAck = false;
 				}
-			} else if (machine.getTemperature() < lowerlimit && !isHeating){
+			} else if (machine.getTemperature() <= lowerlimit && !isHeating){
 				machine.setHeating(true);
 				isHeating = true;
 			}
